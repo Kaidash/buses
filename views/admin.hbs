@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+    {{> head}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.min.css" /><div class="container">
+    <div class="page-header text-center">
+        <h1>Admin</h1>
+        <a href="/logout" class="btn btn-info">Logout</a>
+    </div>
+
+    <div class="well">
+        <p><strong>Admin ID</strong>: {{ user.id }}</p>
+        <p><strong>Email</strong>: {{ user.email }}</p>
+    </div>
+    <div id="exTab2" class="container">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a  href="#1" data-toggle="tab">Создать поезд</a>
+            </li>
+            <li><a href="#2" data-toggle="tab">Поезда</a>
+            </li>
+            <li><a href="#3" data-toggle="tab">Solution</a>
+            </li>
+        </ul>
+
+        <div class="tab-content ">
+            <div class="tab-pane active" id="1">
+                <div class="input-group">
+                    <label for="bus-name">Название рейса автобуса</label>
+                    <input type="text" class="form-control" id="bus-name">
+                </div>
+                <div class="input-group">
+                    <label for="bus-name">Количество мест</label>
+                    <input type="number" class="form-control" id="bus-places">
+                </div>
+                <div id="combinations-container">
+                    <h3>Станции маршрутов</h3>
+                    <div class="comb-row row input-group">
+                        <div class="col-md-3">
+                            <label for="bus-name">Станция отправления</label>
+                            <input type="text" class="from">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="bus-name">Станция прибытия</label>
+                            <input type="text"  class="to">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="bus-name">Время отпарвления</label>
+                            <div class='input-group date datetimepicker'>
+                                <input type='text' class="form-control start-date" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-chevron-left"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="bus-name">Время прибытия</label>
+                            <div class='input-group date datetimepicker'>
+                                <input type='text' class="form-control end-date" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-chevron-left"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="add-comb" class="btn btn-info">Add combination</button>
+                <button class="btn btn-success save-btn">Save</button>
+            </div>
+            <div class="tab-pane" id="2">
+                <h3>Notice the gap between the content and tab after applying a background color</h3>
+            </div>
+            <div class="tab-pane" id="3">
+                <h3>add clearfix to tab-content (see the css)</h3>
+            </div>
+        </div>
+    </div>
+
+    <hr></hr>
+</div>
+</body>
+{{> cdns}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+    <script>
+    (function ($) {
+        $('.datetimepicker').datetimepicker({
+            minDate: moment(),
+            ignoreReadonly: true,
+            showTodayButton: true,
+            format: 'YYYY-MM-DD HH:mm:ss'
+        });
+        $('#add-comb').on('click', function () {
+            $('.comb-row').clone().first().appendTo('#combinations-container');
+            $('.datetimepicker').datetimepicker({
+                minDate: moment(),
+                ignoreReadonly: true,
+                showTodayButton: true,
+                format: 'YYYY-MM-DD HH:mm:ss'
+            });
+        });
+        $('.save-btn').on('click', function () {
+            var data = {
+                name: $('#bus-name').val(),
+                places: $('#bus-places').val(),
+                combinations: []
+            };
+            $('.comb-row').each(function () {
+                var from = $('.from', this).val();
+                var to = $('.to', this).val();
+                var start_date = $('.start-date', this).val();
+                var end_date = $('.end-date', this).val();
+                if (from.length && to.length && start_date.length && end_date.length) {
+                    var combination = {
+                        comb_from: from,
+                        comb_to: to,
+                        start_date: start_date,
+                        end_date: end_date
+                    };
+                    data.combinations.push(combination)
+                }
+            });
+            if (data.name.length && data.places.length && data.combinations.length) {
+                $.ajax({
+                    url: 'http://localhost:3000/api/v1/bus',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function(data) {
+                        console.log(data)
+                    }
+                });
+            } else {
+              console.error('One of the fields is empty')
+            }
+        })
+    }($));
+</script>
+</html>

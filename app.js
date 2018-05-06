@@ -10,6 +10,7 @@ let path           = require('path');
 const session      = require('express-session');
 
 const BusRouter  = require('./controller/bus');
+const PlaceRouter  = require('./controller/place');
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use(passport.session());
 app.use(flash());
 // API Routes
 app.use('/api/v1/', BusRouter);
+app.use('/api/v1/', PlaceRouter);
 // Set up routes and pass in configured passport
 require('./routes/index.js')(app);
 require('./routes/auth.js')(app, passport);

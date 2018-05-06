@@ -13,6 +13,7 @@ const getConnection = function () {
 };
 const query = function (command, args) {
     return using(getConnection(), function (connection) {
+        console.log(command);
         return connection.queryAsync(command, args);
     });
 };

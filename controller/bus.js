@@ -1,10 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const createBus = require('../models/bus');
-const createComb = require('../models/combination');
-const createPlace = require('../models/place');
-const asyncForEach = require('../utils/asyncForEach');
-const asyncForEachByNumber = require('../utils/asyncForEachByNumber');
+const place = require('../models/place');
+const comb = require('../models/combination');
+
+router.get('/bus', async (req, res) => {
+    const comb_from = req.query.comb_from;
+    const comb_to = req.query.comb_to;
+    const start_date = req.query.start_date;
+    const end_date = req.query.end_date;
+    if (comb_from && comb_to && start_date) {
+        try {
+            const combinations = await comb.searchComb(comb_from, comb_to, start_date, end_date);
+            if (combinations.length) {
+                res.status(200).json({combinations: combinations})
+            } else {
+                res.status(200).json({combinations: []})
+            }
+        } catch (e) {
+            console.log(e);
+            res.status(403).json({error: 'searchComb is wrong'})
+        }
+    }
+});
+
 router.post('/bus', async (req, res) => {
     if (req.body.name) {
         try {
@@ -13,21 +32,24 @@ router.post('/bus', async (req, res) => {
                 if (req.body.combinations.length) {
                     let places = [];
                     let combinations = [];
-                    for (let comb of req.body.combinations) {
-                        const combination = await createComb({id_bus: newBus.id, ...comb});
+                    for (let combItem of req.body.combinations) {
+                        const combination = await comb.createComb({id_bus: newBus.id_bus, ...combItem});
                             if (combination) {
                                 combinations.push(combination);
-                                for (let countIndex = 0; countIndex <= Number(req.body.places); countIndex++) {
-                                    const place = await createPlace(
+                                console.log(combination, 'combination');
+                                for (let countIndex = 1; countIndex <= Number(req.body.places); countIndex++) {
+                                    const placeItem = await place.createPlace(
                                         {
-                                            id_bus: newBus.id,
-                                            id_comb: combination.id,
+                                            id_bus: newBus.id_bus,
+                                            id_comb: combination.id_comb,
                                             status: 0,
                                             price: 0,
-                                            place_number: countIndex
+                                            place_number: countIndex,
+                                            start_date: combination.start_date,
+                                            end_date: combination.end_date
                                         });
-                                    if (place) {
-                                        places.push(place)
+                                    if (placeItem) {
+                                        places.push(placeItem)
                                     } else {
                                         res.status(403).json({error: 'Places is empty'})
                                     }

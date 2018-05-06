@@ -4,3 +4,33 @@
 .comb-row{
   padding: 10px 15px;
 }
+.places-list{
+  display: flex;
+  width: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.places-list .place-item{
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  margin: 0 5px 5px 0;
+  cursor: pointer;
+}
+.places-list .place-item.free-place{
+  background: #b6deb6;
+}
+.places-list .place-item.active{
+  background: aqua;
+}
+.places-list .place-item.reserved-place{
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #ca8989;
+}
+.width-50{
+  width: 50%;
+}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Бронирование</title>
+    {{> head}}
+    </head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h3>Бронирование мест</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h6>Общая цена забронированных мест: <span class="total-price">0</span></h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="places-list" data-comb-id="{{id_comb}}" data-bus-id="{{id_bus}}">
+                {{#each places}}
+                    {{#if status }}
+                        <li class="place-item reserved-place"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title=""
+                            data-original-title="Цена: {{price}}"
+                            data-id-place="{{id_place}}"
+                            data-price="{{price}}" >
+                            {{place_number}}
+                        </li>
+                    {{else}}
+                        <li class="place-item free-place"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title=""
+                            data-original-title="Цена: {{price}}"
+                            data-id-place="{{id_place}}"
+                            data-price="{{price}}">
+                            {{place_number}}
+                        </li>
+                    {{/if}}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <form class="form-horizontal width-50">
+            <div class="form-group">
+                <div class="row">
+                    <label for="firstName" class="col-sm-2 control-label">Имя</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="firstName">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label for="lastName" class="col-sm-2 control-label">Фамилия</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="lastName">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label for="phone" class="col-sm-2 control-label">Телефон</label>
+                    <div class="col-sm-10">
+                        <input type="tell" class="form-control" id="phone">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-1 col-sm-11">
+                    <button class="btn btn-default reserve-btn">Забронировать</button>
+                </div>
+            </div>
+        </form>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+</body>
+{{> cdns}}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    (function ($) {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.place-item').on('click', function () {
+        	if (!$(this).hasClass('active')) {
+                $('.total-price').text(Number($('.total-price').text()) + Number($(this).attr('data-price')))
+            } else {
+                $('.total-price').text(Number($('.total-price').text()) - $(this).attr('data-price'))
+            }
+            $(this).toggleClass('active')
+        });
+        var generatePlacesList = function () {
+        	var places = [];
+            $('.place-item.active').each(function(index) {
+                places.push({
+                    place_number: $(this).text().trim(),
+                    id_place: $(this).attr('data-id-place')
+                })
+            });
+            return places;
+        };
+        $('.reserve-btn').on('click', function(e){
+            e.preventDefault();
+            var data = {
+            	firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                phone:  $('#phone').val(),
+                id_comb: $('.places-list').attr('data-comb-id'),
+                id_bus: $('.places-list').attr('data-bus-id'),
+                places: generatePlacesList()
+            };
+        	if (!$('.place-item.active').length){
+                alert('Вы не выбрали место!')
+            } else if (!data.firstName.length) {
+                alert('Укажите имя')
+            } else if (!data.lastName.length) {
+                alert('Укажите фамилию')
+            } else if (!data.phone.length) {
+                alert('Укажите номер телефона')
+            } else {
+
+                $.ajax({
+                    url: 'http://localhost:3000/api/v1/place',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    type: 'PUT',
+                    success: function(data) {
+                        console.log(data)
+                    },
+                    error: function (jqXHR, exception) {
+                        console.log(jqXHR, exception)
+                    }
+                });
+            }
+        })
+    }($));
+</script>
+</html>

@@ -3,6 +3,7 @@ const router = express.Router();
 const busModel = require('../models/bus');
 const place = require('../models/place');
 const comb = require('../models/combination');
+const moment = require('moment');
 
 router.get('/bus', async (req, res) => {
     const comb_from = req.query.comb_from;
@@ -28,7 +29,9 @@ router.post('/bus', async (req, res) => {
     console.log(req.body, 'req.body');
     if (req.body.name) {
         try {
-            const newBus = await busModel.createBus(req.body.name);
+			const busStartDate = req.body.combinations.reduce(function (a, b) { return moment(a.start_date).toISOString() < moment(b.start_date).toISOString() ? a.start_date : b.start_date; });
+			const busEndDate = req.body.combinations.reduce(function (a, b) { return moment(a.end_date).toISOString() > moment(b.end_date).toISOString() ? a.end_date : b.end_date; });
+            const newBus = await busModel.createBus(req.body.name, busStartDate, busEndDate);
             if (newBus) {
                 if (req.body.combinations.length) {
                     let places = [];

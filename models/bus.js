@@ -1,12 +1,12 @@
 const db = require('./db');
 
 // Create a new bus
-const createBus = async function (name) {
+const createBus = async function (name, start_date, end_date) {
 	const newBus = {
 		name: name
 	};
-	return await db.query('INSERT INTO buses ( name ) values (?)',
-		[name]
+	return await db.query('INSERT INTO buses ( name, start_date, end_date ) values (?, ?, ?)',
+		[name, start_date, end_date]
 	).then((result) => {
 			if (result) {
 				return {...newBus, id_bus: result.insertId}
@@ -36,7 +36,25 @@ const getBusById = async function (id_bus) {
 		}
 	)
 };
+
+// Clear buses by now date
+const clearBusesByDate = async function() {
+	return await db.query(`DELETE FROM buses WHERE end_date <= NOW()`).then((results) => {
+			if (results) {
+				return results[0]
+			} else {
+				throw ('can not delete bus')
+			}
+		},
+		error => {
+			console.log(error);
+			throw (error)
+		}
+	)
+};
+
 module.exports = {
 	createBus: createBus,
-	getBusById: getBusById
+	getBusById: getBusById,
+	clearBusesByDate: clearBusesByDate
 };

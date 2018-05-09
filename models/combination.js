@@ -51,8 +51,25 @@ const findCombByIdComb = async function(id_comb) {
 		error => { throw (error) }
 	)
 };
+
+// Clear combinations if now() date is !== start date
+const clearCombinstionsByDate = async function () {
+	return await db.query('DELETE FROM combinations WHERE start_date <= NOW()').then((results) => {
+			if (results) {
+				return true
+			} else {
+				throw ('can not cleat combination')
+			}
+		},
+		error => {
+			console.error(error);
+			throw (error)
+		}
+	)
+};
 module.exports = {
     createComb: createComb,
     searchComb: searchComb,
-	findCombByIdComb: findCombByIdComb
+	findCombByIdComb: findCombByIdComb,
+	clearCombinstionsByDate: clearCombinstionsByDate
 };

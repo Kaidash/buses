@@ -56,8 +56,25 @@ const deleteToken = async function (token) {
 	)
 };
 
+// delete token by date
+const clearTokensByDate = async function () {
+	return await db.query('DELETE FROM buy_token WHERE create_at <= DATE_SUB(NOW(), INTERVAL 1 DAY)').then((results) => {
+			if (results) {
+				return true
+			} else {
+				throw ('can not find result in createToken')
+			}
+		},
+		error => {
+			console.error(error);
+			throw (error)
+		}
+	)
+};
+
 module.exports = {
 	getToken: getToken,
 	createToken: createToken,
-	deleteToken: deleteToken
+	deleteToken: deleteToken,
+	clearTokensByDate: clearTokensByDate
 };

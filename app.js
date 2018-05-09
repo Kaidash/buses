@@ -9,6 +9,10 @@ const passport     = require('passport');
 let path           = require('path');
 const session      = require('express-session');
 
+// middlewares
+const tokenChecker = require('./middleware/tokenChecker');
+const clearRowsByNowDate = require('./middleware/clearRowsByNowDate');
+
 const BusRouter  = require('./controller/bus');
 const PlaceRouter  = require('./controller/place');
 
@@ -43,6 +47,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+// Global middlewares
+app.use(tokenChecker);
+app.use(clearRowsByNowDate);
+
 // API Routes
 app.use('/api/v1/', BusRouter);
 app.use('/api/v1/', PlaceRouter);

@@ -90,10 +90,27 @@ const getPlacesByPlaceId = async function(id_place) {
 	)
 };
 
+// Clear places by now date
+const clearPlacesByDate = async function() {
+	return await db.query(`DELETE FROM places WHERE start_date <= NOW()`).then((results) => {
+			if (results) {
+				return results[0]
+			} else {
+				throw ('can not delete place')
+			}
+		},
+		error => {
+			console.log(error);
+			throw (error)
+		}
+	)
+};
+
 module.exports = {
 	createPlace: createPlace,
 	getPlaces: getPlaces,
 	getPlacesByPlaceId: getPlacesByPlaceId,
 	reservePlaces: reservePlaces,
-	buyPlaces: buyPlaces
+	buyPlaces: buyPlaces,
+	clearPlacesByDate: clearPlacesByDate
 };

@@ -25,8 +25,10 @@ DROP TABLE IF EXISTS `buses`;
 CREATE TABLE `buses` (
   `id_bus` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id_bus`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +38,30 @@ CREATE TABLE `buses` (
 LOCK TABLES `buses` WRITE;
 /*!40000 ALTER TABLE `buses` DISABLE KEYS */;
 /*!40000 ALTER TABLE `buses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `buy_token`
+--
+
+DROP TABLE IF EXISTS `buy_token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `buy_token` (
+  `buy_token` char(36) NOT NULL,
+  `id_place` int(10) unsigned DEFAULT NULL,
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`buy_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `buy_token`
+--
+
+LOCK TABLES `buy_token` WRITE;
+/*!40000 ALTER TABLE `buy_token` DISABLE KEYS */;
+/*!40000 ALTER TABLE `buy_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -53,7 +79,7 @@ CREATE TABLE `combinations` (
   `start_date` datetime DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id_comb`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +112,7 @@ CREATE TABLE `places` (
   `start_date` datetime DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id_place`)
-) ENGINE=InnoDB AUTO_INCREMENT=2140 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2230 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,4 +157,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-07 19:36:39
+ALTER TABLE `combinations` AUTO_INCREMENT = 1
+ALTER TABLE `places` AUTO_INCREMENT = 1
+
+-- Dump completed on 2018-05-09 11:07:52

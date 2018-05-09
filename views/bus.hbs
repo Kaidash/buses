@@ -97,7 +97,8 @@
             $('.place-item.active').each(function(index) {
                 places.push({
                     place_number: $(this).text().trim(),
-                    id_place: $(this).attr('data-id-place')
+                    id_place: $(this).attr('data-id-place'),
+                    price: $(this).attr('data-price')
                 })
             });
             return places;
@@ -110,7 +111,7 @@
                 phone:  $('#phone').val(),
                 id_comb: $('.places-list').attr('data-comb-id'),
                 id_bus: $('.places-list').attr('data-bus-id'),
-                places: generatePlacesList()
+                places: generatePlacesList(),
             };
         	if (!$('.place-item.active').length){
                 alert('Вы не выбрали место!')

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const createBus = require('../models/bus');
+const busModel = require('../models/bus');
 const place = require('../models/place');
 const comb = require('../models/combination');
 
@@ -25,9 +25,10 @@ router.get('/bus', async (req, res) => {
 });
 
 router.post('/bus', async (req, res) => {
+    console.log(req.body, 'req.body');
     if (req.body.name) {
         try {
-            const newBus = await createBus(req.body);
+            const newBus = await busModel.createBus(req.body.name);
             if (newBus) {
                 if (req.body.combinations.length) {
                     let places = [];
@@ -43,7 +44,7 @@ router.post('/bus', async (req, res) => {
                                             id_bus: newBus.id_bus,
                                             id_comb: combination.id_comb,
                                             status: 0,
-                                            price: 0,
+                                            price: Number(req.body.price),
                                             place_number: countIndex,
                                             start_date: combination.start_date,
                                             end_date: combination.end_date

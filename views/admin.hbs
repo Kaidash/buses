@@ -18,9 +18,7 @@
             <li class="active">
                 <a  href="#1" data-toggle="tab">Создать поезд</a>
             </li>
-            <li><a href="#2" data-toggle="tab">Поезда</a>
-            </li>
-            <li><a href="#3" data-toggle="tab">Solution</a>
+            <li><a href="#2" data-toggle="tab">Автобусы</a>
             </li>
         </ul>
 
@@ -33,6 +31,10 @@
                 <div class="input-group">
                     <label for="bus-name">Количество мест</label>
                     <input type="number" class="form-control" id="bus-places">
+                </div>
+                <div class="input-group">
+                    <label for="bus-price">Цена одного места</label>
+                    <input type="number" class="form-control" id="bus-price">
                 </div>
                 <div id="combinations-container">
                     <h3>Станции маршрутов</h3>
@@ -89,6 +91,7 @@
             $('.comb-row ').not(':first').remove();
             $('#bus-name').val('');
             $('#bus-places').val('');
+            $('#bus-price').val('');
             $('.from').val('');
             $('.to').val('');
             $('.start-date').val('');
@@ -111,6 +114,7 @@
             var data = {
                 name: $('#bus-name').val(),
                 places: $('#bus-places').val(),
+                price: $('#bus-price').val(),
                 combinations: []
             };
             $('.comb-row').each(function () {
@@ -128,7 +132,7 @@
                     data.combinations.push(combination)
                 }
             });
-            if (data.name.length && data.places.length && data.combinations.length) {
+            if (data.name.length && data.places.length && data.combinations.length && data.price) {
                 $.ajax({
                     url: 'http://localhost:3000/api/v1/bus',
                     contentType: 'application/json',
@@ -140,11 +144,12 @@
                         clearAfterSend()
                     },
                     error: function (jqXHR, exception) {
-                        console.log(jqXHR, exception)
+                        console.error('Что то пошло не так')
                     }
                 });
             } else {
-              console.error('One of the fields is empty')
+                alert('Одно из полей пустое');
+                console.error('One of the fields is empty')
             }
         })
     }($));

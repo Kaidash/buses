@@ -26,12 +26,19 @@ router.get('/bus', async (req, res) => {
 });
 
 router.post('/bus', async (req, res) => {
-    console.log(req.body, 'req.body');
     if (req.body.name) {
         try {
-			const busStartDate = req.body.combinations.reduce(function (a, b) { return moment(a.start_date).toISOString() < moment(b.start_date).toISOString() ? a.start_date : b.start_date; });
-			const busEndDate = req.body.combinations.reduce(function (a, b) { return moment(a.end_date).toISOString() > moment(b.end_date).toISOString() ? a.end_date : b.end_date; });
-            const newBus = await busModel.createBus(req.body.name, busStartDate, busEndDate);
+			let busStartDate;
+			let busEndDate;
+			if (req.body.combinations.length > 1) {
+				busStartDate = req.body.combinations.reduce(function (a, b) { return moment(a.start_date).toISOString() < moment(b.start_date).toISOString() ? a.start_date : b.start_date; });
+				busEndDate = req.body.combinations.reduce(function (a, b) { return moment(a.end_date).toISOString() > moment(b.end_date).toISOString() ? a.end_date : b.end_date; });
+			} else {
+				busStartDate = req.body.combinations[0].start_date;
+				busEndDate = req.body.combinations[0].end_date
+            }
+            console.log(busStartDate, busEndDate, 'busStartDate, busEndDate');
+			const newBus = await busModel.createBus(req.body.name, busStartDate, busEndDate);
             if (newBus) {
                 if (req.body.combinations.length) {
                     let places = [];

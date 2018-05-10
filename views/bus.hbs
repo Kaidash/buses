@@ -130,7 +130,7 @@
                     dataType: 'json',
                     type: 'PUT',
                     success: function(data) {
-                        console.log(data)
+                        window.location.href = window.location.pathname + window.location.search + window.location.hash;
                     },
                     error: function (jqXHR, exception) {
                         console.log(jqXHR, exception)

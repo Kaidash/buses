@@ -45,11 +45,7 @@ router.put('/place', async (req, res) => {
 										}
 									});
 							});
-							if (updatedPlaces.length) {
-								res.redirect(req.originalUrl)
-							} else {
-								res.status(403).json({error: 'Cannot accept your request'})
-							}
+							res.status(200).json({message: 'success'})
 						}
 					}
 				});
